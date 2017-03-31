@@ -74,12 +74,12 @@ public class EdgeBuilder : MonoBehaviour {
                     float angle = Vector3.Angle(currentLine.GetPosition(1) - currentEdge.transform.root.position, Vector3.right);
                     // Verificar se a aresta é diagonal ou não
                     if (angle % 90 == 0) {
-                        matrix[row][column] = 1;
                         currentEdge.GetComponent<Edge>().weight = 1;
+                        matrix[row][column] = currentEdge.GetComponent<Edge>().weight;
                     } else {
-                        //matrix[row][column] = Mathf.Sqrt(2);
-                        matrix[row][column] = 1;
                         currentEdge.GetComponent<Edge>().weight = Mathf.Sqrt(2);
+                        matrix[row][column] = 1;
+                        //matrix[row][column] = currentEdge.GetComponent<Edge>().weight;
                     }
 
                     //matrix[row][column] = 1;
