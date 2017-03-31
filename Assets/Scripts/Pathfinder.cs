@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Pathfinder : MonoBehaviour {
     public Color startPointColor;
     public Color endPointColor;
     public Color edgeColor;
     public float edgeWidth;
+    public Toggle[] buttons;
     public string pathTaken { get; private set; }
     private Color startPointOriginalColor;
     private GameObject startPoint;
     private GameObject endPoint;
+    private List<Edge> edges;
 
     void Update() {
         // Verifica o input do ponto inicial (startPoint)
@@ -65,6 +68,9 @@ public class Pathfinder : MonoBehaviour {
         Array.Reverse(pathArr);
         pathTaken = string.Join(" -> ", pathArr);
         print(pathTaken);
+
+        GetComponent<ModeSwitcher>().SwitchMode();
+        ToggleUIButtons();
     }
 
     // Algoritmo de Busca em Largura para encontrar o menor caminho
@@ -112,20 +118,54 @@ public class Pathfinder : MonoBehaviour {
 
     // Realce das arestas para indicar o caminho
     private void HighlightEdges(List<GameObject> path) {
+        edges = new List<Edge>();
+
         foreach (GameObject vertex in path) {
             if (vertex.transform.childCount > 0) {
-                Edge[] edges = vertex.GetComponentsInChildren<Edge>();
+                Edge[] children = vertex.GetComponentsInChildren<Edge>();
 
-                foreach (Edge edge in edges) {
+                foreach (Edge edge in children) {
                     if (path.Contains(edge.parentVertex) && path.Contains(edge.childVertex)) {
                         LineRenderer lr = edge.GetComponent<LineRenderer>();
                         lr.startWidth = edgeWidth;
                         lr.endWidth = edgeWidth;
                         lr.startColor = edgeColor;
                         lr.endColor = edgeColor;
+
+                        edges.Add(edge);
                     }
                 }
             }
         }
+    }
+
+    // Habilita ou habilita certos botões da interface
+    private void ToggleUIButtons() {
+        foreach(Toggle t in buttons) {
+            switch (t.interactable) {
+                case true:
+                    t.interactable = false;
+                    break;
+                case false:
+                    t.interactable = true;
+                    break;
+            }
+        }
+    }
+
+    // Distância: pesoAresta1 + pesoAresta2 + pesoArestaN
+    public float Distance() {
+        float distance = 0;
+
+        foreach (Edge edge in edges) {
+            distance += edge.weight;
+        }
+
+        return distance;
+    }
+
+    public float ManhattanDistance() {
+        return Mathf.Abs(startPoint.transform.position.x - endPoint.transform.position.x) + 
+               Mathf.Abs(startPoint.transform.position.y - endPoint.transform.position.y);
     }
 }

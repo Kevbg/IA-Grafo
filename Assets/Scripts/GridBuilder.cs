@@ -9,7 +9,7 @@ public class GridBuilder : MonoBehaviour {
     public GameObject vertexLabel;
     public GameObject canvas;
     public GameObject slider;
-    public float vertexSpacing = 2;
+    public float vertexSpacing = 3;
     private List<GameObject> vertices;
     private List<GameObject> vertexLabels;
 

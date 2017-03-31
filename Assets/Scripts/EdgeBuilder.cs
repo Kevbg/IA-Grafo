@@ -10,7 +10,7 @@ public class EdgeBuilder : MonoBehaviour {
     private int gridSize;
     private GameObject firstVertex;
     private GameObject secondVertex;
-    public int[][] matrix { get; private set; }
+    public float[][] matrix { get; private set; }
 
     // Instancia uma nova matriz e lista de arestas
     public void Initialize() {
@@ -26,10 +26,10 @@ public class EdgeBuilder : MonoBehaviour {
 
     // Cria uma nova matriz
     public void CreateNewMatrix() {
-        matrix = new int[(int)Mathf.Pow(gridSize, 2)][];
+        matrix = new float[(int)Mathf.Pow(gridSize, 2)][];
 
         for (int i = matrix.Length; i > 0; i--) {
-            matrix[matrix.Length - i] = new int[i];
+            matrix[matrix.Length - i] = new float[i];
         }
     }
 
@@ -71,8 +71,18 @@ public class EdgeBuilder : MonoBehaviour {
                     currentEdge.GetComponent<Edge>().childVertex = hit.transform.gameObject;
                     currentEdge.name = "Edge(" + currentEdge.transform.root.name + ", " + hit.transform.name + ")";
 
+                    float angle = Vector3.Angle(currentLine.GetPosition(1) - currentEdge.transform.root.position, Vector3.right);
                     // Verificar se a aresta é diagonal ou não
-                    matrix[row][column] = 1;
+                    if (angle % 90 == 0) {
+                        matrix[row][column] = 1;
+                        currentEdge.GetComponent<Edge>().weight = 1;
+                    } else {
+                        //matrix[row][column] = Mathf.Sqrt(2);
+                        matrix[row][column] = 1;
+                        currentEdge.GetComponent<Edge>().weight = Mathf.Sqrt(2);
+                    }
+
+                    //matrix[row][column] = 1;
 
                     currentEdge = null;
                     currentLine = null;
